@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Test</title>
+    <!-- 使用网上的 CDN 链接引入 sockjs-client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <!-- 使用网上的 CDN 链接引入 stomp-websocket -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .chat-container {
+            width: 400px;
+            height: 500px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-messages {
+            height: 420px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .message-input {
+            width: calc(100% - 80px);
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+
+        .send-button {
+            width: 80px;
+            padding: 10px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .sent {
+            background-color: #dcf8c6;
+            text-align: right;
+        }
+
+        .received {
+            background-color: #e5e5ea;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+<div class="chat-container" id="user1-chat">
+    <div class="chat-messages" id="user1-messages"></div>
+    <input type="text" class="message-input" id="user1-input" placeholder="输入消息...">
+    <button class="send-button" id="user1-send">发送</button>
+</div>
+<div class="chat-container" id="user2-chat">
+    <div class="chat-messages" id="user2-messages"></div>
+    <input type="text" class="message-input" id="user2-input" placeholder="输入消息...">
+    <button class="send-button" id="user2-send">发送</button>
+</div>
+<script>
+    // 用户1的连接
+    var socket1 = new SockJS('http://localhost:8091/ws');
+    var stompClient1 = Stomp.over(socket1);
+    var user1 = 'user1';
+    var user2 = 'user2';
+
+    stompClient1.connect({}, function (frame) {
+        console.log('User1 Connected: ' + frame);
+
+        // 加入聊天
+        var joinMessage1 = {
+            type: 'JOIN',
+            content: '加入聊天',
+            sender: user1,
+            receiver: '',
+            timestamp: new Date().toLocaleString()
+        };
+        stompClient1.send("/app/chat.addUser", {}, JSON.stringify(joinMessage1));
+
+        // 订阅接收消息
+        stompClient1.subscribe('/user/' + user1 + '/queue/messages', function (message) {
+            var chatMessage = JSON.parse(message.body);
+            displayMessage(chatMessage, 'received', 'user1-messages');
+        });
+
+        // 监听发送按钮点击事件
+        document.getElementById('user1-send').addEventListener('click', function () {
+            sendMessage(user1, user2, 'user1-input', 'user1-messages');
+        });
+
+        // 监听输入框的键盘事件，按下回车键发送消息
+        document.getElementById('user1-input').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                sendMessage(user1, user2, 'user1-input', 'user1-messages');
+            }
+        });
+    });
+
+    // 用户2的连接
+    var socket2 = new SockJS('http://localhost:8091/ws');
+    var stompClient2 = Stomp.over(socket2);
+
+    stompClient2.connect({}, function (frame) {
+        console.log('User2 Connected: ' + frame);
+
+        // 加入聊天
+        var joinMessage2 = {
+            type: 'JOIN',
+            content: '加入聊天',
+            sender: user2,
+            receiver: '',
+            timestamp: new Date().toLocaleString()
+        };
+        stompClient2.send("/app/chat.addUser", {}, JSON.stringify(joinMessage2));
+
+        // 订阅接收消息
+        stompClient2.subscribe('/user/' + user2 + '/queue/messages', function (message) {
+            var chatMessage = JSON.parse(message.body);
+            displayMessage(chatMessage, 'received', 'user2-messages');
+        });
+
+        // 监听发送按钮点击事件
+        document.getElementById('user2-send').addEventListener('click', function () {
+            sendMessage(user2, user1, 'user2-input', 'user2-messages');
+        });
+
+        // 监听输入框的键盘事件，按下回车键发送消息
+        document.getElementById('user2-input').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                sendMessage(user2, user1, 'user2-input', 'user2-messages');
+            }
+        });
+    });
+
+    function sendMessage(sender, receiver, inputId, messagesId) {
+        var messageInput = document.getElementById(inputId);
+        var messageContent = messageInput.value.trim();
+        if (messageContent) {
+            var message = {
+                type: 'CHAT',
+                content: messageContent,
+                sender: sender,
+                receiver: receiver,
+                timestamp: new Date().toLocaleString()
+            };
+            var client = sender === user1 ? stompClient1 : stompClient2;
+            client.send("/app/chat/" + receiver, {}, JSON.stringify(message));
+            displayMessage(message, 'sent', messagesId);
+            messageInput.value = '';
+        }
+    }
+
+    function displayMessage(message, type, messagesId) {
+        var chatMessages = document.getElementById(messagesId);
+        var messageElement = document.createElement('div');
+        messageElement.classList.add('message', type);
+        messageElement.textContent = message.content;
+        chatMessages.appendChild(messageElement);
+        // 滚动到最新消息
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+</script>
+</body>
+
+</html>
