@@ -14,7 +14,7 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: #f4f4f4;
@@ -75,87 +75,45 @@
 </head>
 
 <body>
-<div class="chat-container" id="user1-chat">
-    <div class="chat-messages" id="user1-messages"></div>
-    <input type="text" class="message-input" id="user1-input" placeholder="输入消息...">
-    <button class="send-button" id="user1-send">发送</button>
-</div>
-<div class="chat-container" id="user2-chat">
-    <div class="chat-messages" id="user2-messages"></div>
-    <input type="text" class="message-input" id="user2-input" placeholder="输入消息...">
-    <button class="send-button" id="user2-send">发送</button>
+<div class="chat-container" id="user-chat">
+    <div class="chat-messages" id="user-messages"></div>
+    <input type="text" class="message-input" id="user-input" placeholder="输入消息...">
+    <button class="send-button" id="user-send">发送</button>
 </div>
 <script>
-    // 用户1的连接
-    var socket1 = new SockJS('http://localhost:8091/ws');
-    var stompClient1 = Stomp.over(socket1);
-    var user1 = 'user1';
-    var user2 = 'user2';
+    // 当前登录用户的连接
+    var socket = new SockJS('http://localhost:8091/ws');
+    var stompClient = Stomp.over(socket);
+    var currentUser = 'user1';
 
-    stompClient1.connect({}, function (frame) {
-        console.log('User1 Connected: ' + frame);
+    stompClient.connect({}, function (frame) {
+        console.log('User Connected: ' + frame);
 
         // 加入聊天
-        var joinMessage1 = {
+        var joinMessage = {
             type: 'JOIN',
             content: '加入聊天',
-            sender: user1,
+            sender: currentUser,
             receiver: '',
             timestamp: new Date().toLocaleString()
         };
-        stompClient1.send("/app/chat.addUser", {}, JSON.stringify(joinMessage1));
+        stompClient.send("/app/chat.addUser", {}, JSON.stringify(joinMessage));
 
         // 订阅接收消息
-        stompClient1.subscribe('/user/' + user1 + '/queue/messages', function (message) {
+        stompClient.subscribe('/user/' + currentUser + '/queue/messages', function (message) {
             var chatMessage = JSON.parse(message.body);
-            displayMessage(chatMessage, 'received', 'user1-messages');
+            displayMessage(chatMessage, 'received', 'user-messages');
         });
 
         // 监听发送按钮点击事件
-        document.getElementById('user1-send').addEventListener('click', function () {
-            sendMessage(user1, user2, 'user1-input', 'user1-messages');
+        document.getElementById('user-send').addEventListener('click', function () {
+            sendMessage(currentUser, 'user2', 'user-input', 'user-messages');
         });
 
         // 监听输入框的键盘事件，按下回车键发送消息
-        document.getElementById('user1-input').addEventListener('keydown', function (event) {
+        document.getElementById('user-input').addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
-                sendMessage(user1, user2, 'user1-input', 'user1-messages');
-            }
-        });
-    });
-
-    // 用户2的连接
-    var socket2 = new SockJS('http://localhost:8091/ws');
-    var stompClient2 = Stomp.over(socket2);
-
-    stompClient2.connect({}, function (frame) {
-        console.log('User2 Connected: ' + frame);
-
-        // 加入聊天
-        var joinMessage2 = {
-            type: 'JOIN',
-            content: '加入聊天',
-            sender: user2,
-            receiver: '',
-            timestamp: new Date().toLocaleString()
-        };
-        stompClient2.send("/app/chat.addUser", {}, JSON.stringify(joinMessage2));
-
-        // 订阅接收消息
-        stompClient2.subscribe('/user/' + user2 + '/queue/messages', function (message) {
-            var chatMessage = JSON.parse(message.body);
-            displayMessage(chatMessage, 'received', 'user2-messages');
-        });
-
-        // 监听发送按钮点击事件
-        document.getElementById('user2-send').addEventListener('click', function () {
-            sendMessage(user2, user1, 'user2-input', 'user2-messages');
-        });
-
-        // 监听输入框的键盘事件，按下回车键发送消息
-        document.getElementById('user2-input').addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                sendMessage(user2, user1, 'user2-input', 'user2-messages');
+                sendMessage(currentUser, 'user2', 'user-input', 'user-messages');
             }
         });
     });
@@ -171,8 +129,7 @@
                 receiver: receiver,
                 timestamp: new Date().toLocaleString()
             };
-            var client = sender === user1 ? stompClient1 : stompClient2;
-            client.send("/app/chat/" + receiver, {}, JSON.stringify(message));
+            stompClient.send("/app/chat/" + receiver, {}, JSON.stringify(message));
             displayMessage(message, 'sent', messagesId);
             messageInput.value = '';
         }

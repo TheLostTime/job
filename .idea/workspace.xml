@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="11eb7113-b088-4234-b927-7f2cdf4e716a" name="Changes" comment="daa" />
+    <list default="true" id="11eb7113-b088-4234-b927-7f2cdf4e716a" name="Changes" comment="daa啊实打实的">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/recruitment/chat/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/recruitment/chat/config/WebSocketConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/test.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/test.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,15 +38,8 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="localRepository" value="D:\maven\repo" />
-        <option name="mavenHome" value="$PROJECT_DIR$/../../maven/apache-maven-3.8.4" />
-        <option name="userSettingsFile" value="D:\maven\apache-maven-3.8.4\conf\settings.xml" />
+        <option name="useMavenConfig" value="true" />
       </MavenGeneralSettings>
-    </option>
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="jdkForImporter" value="11" />
-      </MavenImportingSettings>
     </option>
   </component>
   <component name="MavenRunner">
@@ -64,7 +61,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.41379312" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.VCS" />
@@ -82,32 +79,15 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.JobApplication">
+  <component name="RunManager">
     <configuration name="JobApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="chat" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.recruitment.chat.JobApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="JobApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="job" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.recruitment.chat.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.recruitment.chat.JobApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Spring Boot.JobApplication" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -139,6 +119,8 @@
       <workItem from="1747720792100" duration="507000" />
       <workItem from="1747721474205" duration="420000" />
       <workItem from="1747729142010" duration="3389000" />
+      <workItem from="1747732714523" duration="1698000" />
+      <workItem from="1747734441096" duration="3417000" />
     </task>
     <task id="LOCAL-00001" summary="daa">
       <created>1747706805072</created>
@@ -154,7 +136,14 @@
       <option name="project" value="LOCAL" />
       <updated>1747731470228</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="daa啊实打实的">
+      <created>1747732792687</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747732792687</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,7 +162,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="daa" />
-    <option name="LAST_COMMIT_MESSAGE" value="daa" />
+    <MESSAGE value="daa啊实打实的" />
+    <option name="LAST_COMMIT_MESSAGE" value="daa啊实打实的" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
